@@ -1,6 +1,6 @@
 import time
 import zmq
-import cv2
+#import cv2 # Emil kunne ikke køre det mens det her er der; noget med openCV?  Det virker i hvertfald uden!
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
