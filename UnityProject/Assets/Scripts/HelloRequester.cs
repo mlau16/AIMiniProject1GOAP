@@ -33,7 +33,14 @@ public class HelloRequester : RunAbleThread
                         gotMessage = client.TryReceiveFrameString(out message); // this returns true if it's successful
                         if (gotMessage) break;
                     }
-                    if (gotMessage) Debug.Log("Received " + message);
+                    if (gotMessage) 
+                    {
+                        Debug.Log("Received " + message);
+                        // TODO: Analyze what we recieved here! :) 
+                        // Check if the string is of json format!
+                        // if it is, tryparse it to the relevant c# class representations thereof
+                        // if it is *, update the relevant object with the new information.
+                    }
                 }
                 
             }
