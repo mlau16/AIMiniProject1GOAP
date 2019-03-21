@@ -37,7 +37,25 @@ public class GoapPlanner
 
 		// build graph
 		Node start = new Node (null, 0, worldState, null);
-		bool success = buildGraph(start, leaves, usableActions, goal);
+
+        List<ActionInformation> actionInfo = new List<ActionInformation>();
+        int i = 0;
+        foreach (var item in usableActions)
+        {
+            ActionInformation info = new ActionInformation();
+            info.preconditions = item.Preconditions;
+            info.effects = item.Effects;
+            info.cost = item.cost;
+            actionInfo.Add(info);
+        }
+
+        // Send a message with usable actions, goal and ID to python via a public method from the goap agent
+        GoapRequestObject requestObject = new GoapRequestObject(agent.GetComponent<GoapAgent>().ID, actionInfo, goal);
+        string jsonRequestObject = JsonUtility.ToJson(requestObject);
+        agent.GetComponent<GoapAgent>().SendPlanRequestToServer(jsonRequestObject);                 
+
+        bool success = buildGraph(start, leaves, usableActions, goal);
+
 
 		if (!success) {
 			// oh no, we didn't get a plan
@@ -179,24 +197,66 @@ public class GoapPlanner
 		}
 		return state;
 	}
-
-	/**
-	 * Used for building up the graph and holding the running costs of actions.
-	 */
-	private class Node {
-		public Node parent;
-		public float runningCost;
-		public HashSet<KeyValuePair<string,object>> state;
-		public GoapAction action;
-
-		public Node(Node parent, float runningCost, HashSet<KeyValuePair<string,object>> state, GoapAction action) {
-			this.parent = parent;
-			this.runningCost = runningCost;
-			this.state = state;
-			this.action = action;
-		}
-	}
-
 }
+
+/**
+ * Used for building up the graph and holding the running costs of actions.
+ */
+public class Node
+{
+    public Node parent;
+    public float runningCost;
+    public HashSet<KeyValuePair<string, object>> state;
+    public GoapAction action;
+
+    public Node(Node parent, float runningCost, HashSet<KeyValuePair<string, object>> state, GoapAction action)
+    {
+        this.parent = parent;
+        this.runningCost = runningCost;
+        this.state = state;
+        this.action = action;
+    }
+}
+
+public class GoapRequestObject
+{
+    public int ID;
+    List<ActionInformation> actions;
+    HashSet<KeyValuePair<string, object>> goal;
+
+    public GoapRequestObject(int _ID, List<ActionInformation> _actions, HashSet<KeyValuePair<string, object>> _goal) 
+    {
+        ID = _ID;
+        actions = _actions;
+        goal = _goal;
+    }
+}
+
+public class ActionInformation
+{
+    public HashSet<KeyValuePair<string, object>> preconditions;
+    public HashSet<KeyValuePair<string, object>> effects;
+    public float cost;
+
+    public ActionInformation(HashSet<KeyValuePair<string, object>> _preconditions, HashSet<KeyValuePair<string, object>> _effects, float _cost)
+    {
+        preconditions = _preconditions;
+        effects = _effects;
+        cost = _cost;
+    }
+
+    public ActionInformation()
+    {
+
+    }
+}
+
+public class GoapResposeObject
+{
+    bool success;
+    Node solution;
+    int ID;
+}
+
 
 

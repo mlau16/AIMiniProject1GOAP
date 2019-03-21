@@ -6,6 +6,8 @@ using System;
 
 public sealed class GoapAgent : MonoBehaviour {
 
+    private static int idIncrem = 0;
+    public int ID;
 	private FSM stateMachine;
 
 	private FSM.FSMState idleState; // finds something to do
@@ -21,6 +23,8 @@ public sealed class GoapAgent : MonoBehaviour {
 
 
 	void Start () {
+        ID = idIncrem;
+        idIncrem++;
 		stateMachine = new FSM ();
 		availableActions = new HashSet<GoapAction> ();
 		currentActions = new Queue<GoapAction> ();
@@ -38,6 +42,16 @@ public sealed class GoapAgent : MonoBehaviour {
 	void Update () {
 		stateMachine.Update (this.gameObject);
 	}
+
+    public void SendPlanRequestToServer(string msg)
+    {
+        if (!Camera.main.GetComponent<HelloClient>())
+        {
+            Debug.LogError("Could not find server client");
+            return;
+        }
+        Camera.main.GetComponent<HelloClient>().SendObject(msg);
+    }
 
 
 	public void addAction(GoapAction a) {

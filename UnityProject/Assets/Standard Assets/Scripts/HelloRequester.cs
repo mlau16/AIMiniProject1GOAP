@@ -43,6 +43,7 @@ public class HelloRequester : RunAbleThread
                         // if it is, tryparse it to the relevant c# class representations thereof
                         // if it is *, update the relevant object with the new information.
                     }
+                    Send = false;
                 }
                 
             }

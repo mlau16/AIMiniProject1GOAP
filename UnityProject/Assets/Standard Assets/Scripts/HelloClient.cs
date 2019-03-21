@@ -13,9 +13,15 @@ public class HelloClient : MonoBehaviour
     public bool SendPack = true;
     private byte[] current_img;
 
+    public void SendObject(string msg)
+    {    
+        _helloRequester.bytes = Encoding.ASCII.GetBytes(msg);
+        _helloRequester.Continue();
+    }
+
     private void OnPostRender()
     {
-
+        /*
         if (SendPack)
         {
             string hey = "Hello world!";
@@ -27,6 +33,7 @@ public class HelloClient : MonoBehaviour
             _helloRequester.Pause();
 
         }
+        */
     }
 
     private void Start()
