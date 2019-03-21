@@ -28,7 +28,7 @@ while True:
     message = socket.recv()
     time.sleep(0.1)  # Small delay to wait for the texture to be made
     print("server ready to recieve data")
-    socket.send(message)
-    socket.send(jobj)
+    #socket.send(message)
+    socket.send_string(jobj)
     print("Sent back message")
 

@@ -18,7 +18,7 @@ public class HelloClient : MonoBehaviour
 
         if (SendPack)
         {
-            string hey = "Hello world";
+            string hey = "Hello world!";
             _helloRequester.bytes = Encoding.ASCII.GetBytes(hey);
             _helloRequester.Continue();
         }
