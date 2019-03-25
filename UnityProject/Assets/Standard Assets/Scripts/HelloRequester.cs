@@ -36,8 +36,7 @@ public class HelloRequester : RunAbleThread
                     if (gotMessage) 
                     {
                         Debug.Log("Received " + message);
-                        TestObject obj = JsonUtility.FromJson<TestObject>(message);
-                        Debug.Log(obj.x);
+                       
                         // TODO: Analyze what we recieved here! :) 
                         // Check if the string is of json format!
                         // if it is, tryparse it to the relevant c# class representations thereof

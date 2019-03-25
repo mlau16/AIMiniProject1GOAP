@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 /**
  * Plans what actions can be completed in order to fulfill a goal state.
@@ -50,9 +51,10 @@ public class GoapPlanner
         }
 
         // Send a message with usable actions, goal and ID to python via a public method from the goap agent
-        GoapRequestObject requestObject = new GoapRequestObject(agent.GetComponent<GoapAgent>().ID, actionInfo, goal);
-        string jsonRequestObject = JsonUtility.ToJson(requestObject);
-        agent.GetComponent<GoapAgent>().SendPlanRequestToServer(jsonRequestObject);                 
+        GoapRequestObject requestObject = new GoapRequestObject(agent.GetComponent<GoapAgent>().ID, actionInfo, worldState, goal);
+        string json = JsonConvert.SerializeObject(requestObject);
+        agent.GetComponent<GoapAgent>().SendPlanRequestToServer(json);
+        Debug.LogWarning(json);
 
         bool success = buildGraph(start, leaves, usableActions, goal);
 
@@ -218,20 +220,24 @@ public class Node
     }
 }
 
+[System.Serializable]
 public class GoapRequestObject
 {
     public int ID;
-    List<ActionInformation> actions;
-    HashSet<KeyValuePair<string, object>> goal;
+    public List<ActionInformation> actions;
+    public HashSet<KeyValuePair<string, object>> worldState;
+    public HashSet<KeyValuePair<string, object>> goal;
 
-    public GoapRequestObject(int _ID, List<ActionInformation> _actions, HashSet<KeyValuePair<string, object>> _goal) 
+    public GoapRequestObject(int _ID, List<ActionInformation> _actions, HashSet<KeyValuePair<string, object>> _worldState, HashSet<KeyValuePair<string, object>> _goal) 
     {
         ID = _ID;
         actions = _actions;
+        worldState = _worldState;
         goal = _goal;
     }
 }
 
+[System.Serializable]
 public class ActionInformation
 {
     public HashSet<KeyValuePair<string, object>> preconditions;
@@ -251,6 +257,7 @@ public class ActionInformation
     }
 }
 
+[System.Serializable]
 public class GoapResposeObject
 {
     bool success;
