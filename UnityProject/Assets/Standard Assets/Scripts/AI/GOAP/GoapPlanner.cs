@@ -260,8 +260,7 @@ public class ActionInformation
 [System.Serializable]
 public class GoapResposeObject
 {
-    bool success;
-    Node solution;
+    List<Node> solutionList;
     int ID;
 }
 
