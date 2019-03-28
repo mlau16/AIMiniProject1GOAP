@@ -22,6 +22,7 @@ public sealed class GoapAgent : MonoBehaviour {
 	private IGoap dataProvider; // this is the implementing class that provides our world data and listens to feedback on planning
 
 	private GoapPlanner planner;
+    private bool doOnce = true;
 
 
 	void Start () {
@@ -37,6 +38,8 @@ public sealed class GoapAgent : MonoBehaviour {
 		createMoveToState ();
 		createPerformActionState ();
 		stateMachine.pushState (idleState);
+
+        Debug.Log("GoapAgent -- " + gameObject.name + " instance ID: " + gameObject.GetInstanceID());
 
 	}
 	
@@ -84,14 +87,16 @@ public sealed class GoapAgent : MonoBehaviour {
 			HashSet<KeyValuePair<string,object>> worldState = dataProvider.getWorldState();
 			HashSet<KeyValuePair<string,object>> goal = dataProvider.createGoalState();
 
-			// Plan
+            // Plan
             // MAYBE ONLY DO THIS ONCE EVERY n SECONDS
-			planner.plan(gameObject, availableActions, worldState, goal);
-			if (plan != null) {
+
+            planner.plan(gameObject, availableActions, worldState, goal);
+
+            if (plan != null) {
 				// we have a plan, hooray!
 				currentActions = plan;
 				dataProvider.planFound(goal, plan);
-
+                doOnce = true;
 				fsm.popState(); // move to PerformAction state
 				fsm.pushState(performActionState);
 

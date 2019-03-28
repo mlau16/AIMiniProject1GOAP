@@ -43,6 +43,7 @@ public class HelloRequester : RunAbleThread
                         { }
                         else
                         {
+                            Debug.Log("Json Message: " + message);
                             GoapResposeObject obj = JsonConvert.DeserializeObject<GoapResposeObject>(message);
                             Debug.Log(obj.ID);
                             
@@ -50,16 +51,58 @@ public class HelloRequester : RunAbleThread
                             Queue<GoapAction> queue = new Queue<GoapAction>();
                             List<GoapAction> temp = new List<GoapAction>();
 
+
                             foreach (var a in obj.solutionList)
                             {
-                                tempAction = new GoapAction();
-                                tempAction.preconditions = a.preconditions;
-                                tempAction.effects = a.effects;
+                                var tempAction = new GoapAction();
+
+                                foreach (var subList in a.preconditions)
+                                {
+                                    if (subList[1] == "True")
+                                    {
+                                        tempAction.addPrecondition(subList[0], true);
+                                    }
+                                    else
+                                    {
+                                        tempAction.addPrecondition(subList[0], false);
+                                    } 
+                                }
+
+                                foreach (var subList in a.effects)
+                                {
+                                    if (subList[1] == "True")
+                                    {
+                                        tempAction.addEffect(subList[0], true);
+                                    }
+                                    else
+                                    {
+                                        tempAction.addEffect(subList[0], false);
+                                    }
+                                }
+
                                 tempAction.cost = a.cost;
+
+                                tempAction.target = GameObject.Find(a.targetID);
+
                                 queue.Enqueue(tempAction);
                             }
 
+                            foreach (var item in queue)
+                            {
+                                Debug.Log(item.cost);
+                                Debug.Log(item.effects.Count);
 
+                            }
+                            
+                            GoapAgent[] agents = HelloClient.agents;
+
+                            foreach (var item in agents)
+                            {
+                                if (item.ID == obj.ID)
+                                {
+                                    item.plan = queue;
+                                }
+                            }
                         }
                        
                         // TODO: Analyze what we recieved here! :) 
@@ -80,20 +123,30 @@ public class HelloRequester : RunAbleThread
 [System.Serializable]
 public class GoapResposeObject
 {
-    public List<ActionInformation> solutionList;
     public int ID;
+    public List<ResponseInformation> solutionList;
 }
 
 
-class TestObject 
+[System.Serializable]
+public class ResponseInformation
 {
-    public int x, y;
-    public string z;
-    public float p;
-    public bool q;
+    public float cost;
+    public List<List<string>> effects;
+    public List<List<string>> preconditions;
+    public string targetID;
 
-    public TestObject() 
+    public ResponseInformation(List<List<string>> _preconditions, List<List<string>> _effects, float _cost, string _targetID)
+    {
+        preconditions = _preconditions;
+        effects = _effects;
+        cost = _cost;
+        targetID = _targetID;
+    }
+
+    public ResponseInformation()
     {
 
     }
 }
+

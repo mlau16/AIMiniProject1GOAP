@@ -12,6 +12,7 @@ public class HelloClient : MonoBehaviour
     private HelloRequester _helloRequester;
     public bool SendPack = true;
     private byte[] current_img;
+    public static GoapAgent[] agents;
 
     public void SendObject(string msg)
     {    
@@ -19,10 +20,6 @@ public class HelloClient : MonoBehaviour
         _helloRequester.Continue();
     }
 
-    public GoapAgent[] GetAllAgentsInScene()
-    {
-        return null;
-    }
 
     private void OnPostRender()
     {
@@ -43,6 +40,7 @@ public class HelloClient : MonoBehaviour
 
     private void Start()
     {
+        agents = GameObject.FindObjectsOfType<GoapAgent>();    
         _helloRequester = new HelloRequester();
         _helloRequester.Start();
     }

@@ -47,6 +47,7 @@ public class GoapPlanner
             info.preconditions = item.Preconditions;
             info.effects = item.Effects;
             info.cost = item.cost;
+            info.targetID = item.target.GetInstanceID().ToString();
             actionInfo.Add(info);
         }
 
@@ -55,7 +56,7 @@ public class GoapPlanner
         string json = JsonConvert.SerializeObject(requestObject);
         agent.GetComponent<GoapAgent>().SendPlanRequestToServer(json);
         // Debug.LogWarning(json);
-
+        /*
         bool success = buildGraph(start, leaves, usableActions, goal);
 
 
@@ -94,6 +95,8 @@ public class GoapPlanner
 
 		// hooray we have a plan!
 		return queue;
+        */
+        return null;
 	}
 
 	/**
@@ -244,12 +247,14 @@ public class ActionInformation
     public HashSet<KeyValuePair<string, object>> preconditions;
     public HashSet<KeyValuePair<string, object>> effects;
     public float cost;
+    public string targetID;
 
-    public ActionInformation(HashSet<KeyValuePair<string, object>> _preconditions, HashSet<KeyValuePair<string, object>> _effects, float _cost)
+    public ActionInformation(HashSet<KeyValuePair<string, object>> _preconditions, HashSet<KeyValuePair<string, object>> _effects, float _cost, string _targetID)
     {
         preconditions = _preconditions;
         effects = _effects;
         cost = _cost;
+        targetID = _targetID;
     }
 
     public ActionInformation()
@@ -257,6 +262,9 @@ public class ActionInformation
 
     }
 }
+
+
+
 
 
 
