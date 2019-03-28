@@ -8,7 +8,9 @@ public sealed class GoapAgent : MonoBehaviour {
 
     private static int idIncrem = 0;
     public int ID;
-	private FSM stateMachine;
+    public Queue<GoapAction> plan;
+
+    private FSM stateMachine;
 
 	private FSM.FSMState idleState; // finds something to do
 	private FSM.FSMState moveToState; // moves to a target
@@ -83,7 +85,8 @@ public sealed class GoapAgent : MonoBehaviour {
 			HashSet<KeyValuePair<string,object>> goal = dataProvider.createGoalState();
 
 			// Plan
-			Queue<GoapAction> plan = planner.plan(gameObject, availableActions, worldState, goal);
+            // MAYBE ONLY DO THIS ONCE EVERY n SECONDS
+			planner.plan(gameObject, availableActions, worldState, goal);
 			if (plan != null) {
 				// we have a plan, hooray!
 				currentActions = plan;

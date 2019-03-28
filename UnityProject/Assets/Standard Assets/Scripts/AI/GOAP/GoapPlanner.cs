@@ -54,7 +54,7 @@ public class GoapPlanner
         GoapRequestObject requestObject = new GoapRequestObject(agent.GetComponent<GoapAgent>().ID, actionInfo, worldState, goal);
         string json = JsonConvert.SerializeObject(requestObject);
         agent.GetComponent<GoapAgent>().SendPlanRequestToServer(json);
-        Debug.LogWarning(json);
+        // Debug.LogWarning(json);
 
         bool success = buildGraph(start, leaves, usableActions, goal);
 
@@ -204,6 +204,7 @@ public class GoapPlanner
 /**
  * Used for building up the graph and holding the running costs of actions.
  */
+ [System.Serializable]
 public class Node
 {
     public Node parent;
@@ -257,12 +258,6 @@ public class ActionInformation
     }
 }
 
-[System.Serializable]
-public class GoapResposeObject
-{
-    List<Node> solutionList;
-    int ID;
-}
 
 
 

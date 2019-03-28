@@ -129,7 +129,7 @@ while True:
             m = 0
             while m < len(keyVals) / 2:
                 temp[keyVals[m]] = keyVals[m + 1]
-                m += 1
+                m += 2
 
             copy = preconditions.copy()
             if copy is None:
@@ -150,7 +150,7 @@ while True:
             m = 0
             while m < len(keyVals) / 2:
                 temp[keyVals[m]] = keyVals[m + 1]
-                m += 1
+                m += 2
 
             copy = effects.copy()
             if copy is None:
@@ -176,7 +176,7 @@ while True:
         m = 0
         while m < len(keyVals)/2:
             temp[keyVals[m]] = keyVals[m + 1]
-            m += 1
+            m += 2
 
         copy = worldState.copy()
         if copy is None:
@@ -198,7 +198,7 @@ while True:
         m = 0
         while m < len(keyVals) / 2:
             temp[keyVals[m]] = keyVals[m + 1]
-            m += 1
+            m += 2
 
         copy = goal.copy()
         if copy is None:

@@ -19,6 +19,11 @@ public class HelloClient : MonoBehaviour
         _helloRequester.Continue();
     }
 
+    public GoapAgent[] GetAllAgentsInScene()
+    {
+        return null;
+    }
+
     private void OnPostRender()
     {
         /*

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public abstract class GoapAction : MonoBehaviour {
 
 
-	private HashSet<KeyValuePair<string,object>> preconditions;
-	private HashSet<KeyValuePair<string,object>> effects;
+	public HashSet<KeyValuePair<string,object>> preconditions;
+	public HashSet<KeyValuePair<string,object>> effects;
 
 	private bool inRange = false;
 
