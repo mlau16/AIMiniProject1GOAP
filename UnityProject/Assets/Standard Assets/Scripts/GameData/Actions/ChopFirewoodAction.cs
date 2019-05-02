@@ -72,10 +72,10 @@ public class ChopFirewoodAction : GoapAction
 		
 		if (Time.time - startTime > workDuration) {
 			// finished chopping
-			BackpackComponent backpack = (BackpackComponent)agent.GetComponent(typeof(BackpackComponent));
+			BackpackComponent backpack = agent.GetComponent<BackpackComponent>();
 			backpack.numFirewood += 5;
 			chopped = true;
-			ToolComponent tool = backpack.tool.GetComponent(typeof(ToolComponent)) as ToolComponent;
+			ToolComponent tool = backpack.tool.GetComponent<ToolComponent>();
 			tool.use(0.34f);
 			if (tool.destroyed()) {
 				Destroy(backpack.tool);

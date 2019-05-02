@@ -69,10 +69,10 @@ public class MineOreAction : GoapAction
 
 		if (Time.time - startTime > miningDuration) {
 			// finished mining
-			BackpackComponent backpack = (BackpackComponent)agent.GetComponent(typeof(BackpackComponent));
+			BackpackComponent backpack = agent.GetComponent<BackpackComponent>();
 			backpack.numOre += 2;
 			mined = true;
-			ToolComponent tool = backpack.tool.GetComponent(typeof(ToolComponent)) as ToolComponent;
+			ToolComponent tool = backpack.tool.GetComponent<ToolComponent>();
 			tool.use(0.5f);
 			if (tool.destroyed()) {
 				Destroy(backpack.tool);

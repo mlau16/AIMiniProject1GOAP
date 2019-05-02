@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 public class HelloRequester : RunAbleThread
 {
     public byte[] bytes;
+    public delegate void MsgEvent(string msg);
+    public MsgEvent msgEvent;
     ///     Stop requesting when Running=false.
     protected override void Run()
     {
@@ -43,72 +45,12 @@ public class HelloRequester : RunAbleThread
                         { }
                         else
                         {
-                            Debug.Log("Json Message: " + message);
-                            GoapResposeObject obj = JsonConvert.DeserializeObject<GoapResposeObject>(message);
-                            Debug.Log(obj.ID);
-                            
-                            // enqueue the action list
-                            Queue<GoapAction> queue = new Queue<GoapAction>();
-                            List<GoapAction> temp = new List<GoapAction>();
 
-
-                            foreach (var a in obj.solutionList)
+                            if (msgEvent != null)
                             {
-                                var tempAction = new GoapAction();
-
-                                foreach (var subList in a.preconditions)
-                                {
-                                    if (subList[1] == "True")
-                                    {
-                                        tempAction.addPrecondition(subList[0], true);
-                                    }
-                                    else
-                                    {
-                                        tempAction.addPrecondition(subList[0], false);
-                                    } 
-                                }
-
-                                foreach (var subList in a.effects)
-                                {
-                                    if (subList[1] == "True")
-                                    {
-                                        tempAction.addEffect(subList[0], true);
-                                    }
-                                    else
-                                    {
-                                        tempAction.addEffect(subList[0], false);
-                                    }
-                                }
-
-                                tempAction.cost = a.cost;
-
-                                tempAction.target = GameObject.Find(a.targetID);
-
-                                queue.Enqueue(tempAction);
-                            }
-
-                            foreach (var item in queue)
-                            {
-                                Debug.Log(item.cost);
-                                Debug.Log(item.effects.Count);
-
-                            }
-                            
-                            GoapAgent[] agents = HelloClient.agents;
-
-                            foreach (var item in agents)
-                            {
-                                if (item.ID == obj.ID)
-                                {
-                                    item.plan = queue;
-                                }
-                            }
+                                msgEvent.Invoke(message);
+                            }                   
                         }
-                       
-                        // TODO: Analyze what we recieved here! :) 
-                        // Check if the string is of json format!
-                        // if it is, tryparse it to the relevant c# class representations thereof
-                        // if it is *, update the relevant object with the new information.
                     }
                     Send = false;
                 }
@@ -131,12 +73,13 @@ public class GoapResposeObject
 [System.Serializable]
 public class ResponseInformation
 {
+    public string type;
     public float cost;
     public List<List<string>> effects;
     public List<List<string>> preconditions;
-    public string targetID;
+    public int targetID;
 
-    public ResponseInformation(List<List<string>> _preconditions, List<List<string>> _effects, float _cost, string _targetID)
+    public ResponseInformation(List<List<string>> _preconditions, List<List<string>> _effects, float _cost, int _targetID)
     {
         preconditions = _preconditions;
         effects = _effects;

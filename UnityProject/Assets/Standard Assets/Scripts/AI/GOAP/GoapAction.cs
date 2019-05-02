@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GoapAction : MonoBehaviour {
 
-
+    
 	public HashSet<KeyValuePair<string,object>> preconditions;
 	public HashSet<KeyValuePair<string,object>> effects;
 
@@ -15,8 +15,9 @@ public class GoapAction : MonoBehaviour {
 	 * Changing it will affect what actions are chosen during planning.*/
 	public float cost = 1f;
 
-	/**
+    /**
 	 * An action often has to perform on an object. This is that object. Can be null. */
+    public int targetID;
 	public GameObject target;
 
 	public GoapAction() {

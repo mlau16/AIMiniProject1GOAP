@@ -69,11 +69,15 @@ public class PickUpToolAction : GoapAction
 
 			// create the tool and add it to the agent
 
-			BackpackComponent backpack = (BackpackComponent)agent.GetComponent(typeof(BackpackComponent));
+			BackpackComponent backpack = agent.GetComponent<BackpackComponent>();
+            Debug.Log(backpack);
 			GameObject prefab = Resources.Load<GameObject> (backpack.toolType);
-			GameObject tool = Instantiate (prefab, transform.position, transform.rotation) as GameObject;
+            Debug.Log(prefab);
+            Debug.Log(agent.transform.position);
+			GameObject tool = Instantiate (prefab, agent.transform.position, agent.transform.rotation);
+            Debug.Log(tool);
 			backpack.tool = tool;
-			tool.transform.parent = transform; // attach the tool
+			tool.transform.parent = agent.transform; // attach the tool
 
 			return true;
 		} else {

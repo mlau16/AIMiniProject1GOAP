@@ -8,13 +8,12 @@ using Newtonsoft.Json;
  */
 public class GoapPlanner
 {
-
 	/**
 	 * Plan what sequence of actions can fulfill the goal.
 	 * Returns null if a plan could not be found, or a list of the actions
 	 * that must be performed, in order, to fulfill the goal.
 	 */
-	public Queue<GoapAction> plan(GameObject agent,
+	public void plan(GameObject agent,
 								  HashSet<GoapAction> availableActions, 
 	                              HashSet<KeyValuePair<string,object>> worldState, 
 	                              HashSet<KeyValuePair<string,object>> goal) 
@@ -44,10 +43,17 @@ public class GoapPlanner
         foreach (var item in usableActions)
         {
             ActionInformation info = new ActionInformation();
+
+            string o = "Type: " + item;
+            Debug.Log(o);
+            string output = o.Split('(', ')')[1];
+            info.type = output;
+            Debug.Log(output);
             info.preconditions = item.Preconditions;
             info.effects = item.Effects;
             info.cost = item.cost;
-            info.targetID = item.target.GetInstanceID().ToString();
+            info.targetID = item.target.GetInstanceID();
+            Debug.Log(item.target.GetInstanceID());
             actionInfo.Add(info);
         }
 
@@ -55,48 +61,6 @@ public class GoapPlanner
         GoapRequestObject requestObject = new GoapRequestObject(agent.GetComponent<GoapAgent>().ID, actionInfo, worldState, goal);
         string json = JsonConvert.SerializeObject(requestObject);
         agent.GetComponent<GoapAgent>().SendPlanRequestToServer(json);
-        // Debug.LogWarning(json);
-        /*
-        bool success = buildGraph(start, leaves, usableActions, goal);
-
-
-		if (!success) {
-			// oh no, we didn't get a plan
-			Debug.Log("NO PLAN");
-			return null;
-		}
-
-		// get the cheapest leaf
-		Node cheapest = null;
-		foreach (Node leaf in leaves) {
-			if (cheapest == null)
-				cheapest = leaf;
-			else {
-				if (leaf.runningCost < cheapest.runningCost)
-					cheapest = leaf;
-			}
-		}
-
-		// get its node and work back through the parents
-		List<GoapAction> result = new List<GoapAction> ();
-		Node n = cheapest;
-		while (n != null) {
-			if (n.action != null) {
-				result.Insert(0, n.action); // insert the action in the front
-			}
-			n = n.parent;
-		}
-		// we now have this action list in correct order
-
-		Queue<GoapAction> queue = new Queue<GoapAction> ();
-		foreach (GoapAction a in result) {
-			queue.Enqueue(a);
-		}
-
-		// hooray we have a plan!
-		return queue;
-        */
-        return null;
 	}
 
 	/**
@@ -244,12 +208,13 @@ public class GoapRequestObject
 [System.Serializable]
 public class ActionInformation
 {
+    public string type;
     public HashSet<KeyValuePair<string, object>> preconditions;
     public HashSet<KeyValuePair<string, object>> effects;
     public float cost;
-    public string targetID;
+    public int targetID;
 
-    public ActionInformation(HashSet<KeyValuePair<string, object>> _preconditions, HashSet<KeyValuePair<string, object>> _effects, float _cost, string _targetID)
+    public ActionInformation(HashSet<KeyValuePair<string, object>> _preconditions, HashSet<KeyValuePair<string, object>> _effects, float _cost, int _targetID)
     {
         preconditions = _preconditions;
         effects = _effects;
